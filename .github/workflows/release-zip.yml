@@ -1,0 +1,38 @@
+name: Release Zips
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build-zip:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install deps
+        run: yarn install --frozen-lockfile
+
+      - name: Build Next.js
+        run: yarn build
+
+      - name: Create full ZIP (everything incl. node_modules + .next)
+        run: |
+          cd ..
+          zip -r safevault-dashboard-full.zip safevault-dashboard
+
+      - name: Create slim ZIP (no node_modules, no .next)
+        run: |
+          cd ..
+          zip -r safevault-dashboard-slim.zip safevault-dashboard \
+            -x "safevault-dashboard/node_modules/*" \
+            -x "safevault-dashboard/.next/*"
+
+      - name: Upload release assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            ../safevault-dashboard-full.zip
+            ../safevault-dashboard-slim.zip
