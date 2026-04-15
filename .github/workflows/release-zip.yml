@@ -31,7 +31,7 @@ jobs:
             -x "safevault-dashboard/.next/*"
 
       - name: Upload release assets
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: |
             ../safevault-dashboard-full.zip
